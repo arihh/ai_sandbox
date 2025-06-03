@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameBoardProps } from '../../game/types';
+import { GameBoardProps, Enemy } from '../../game/types';
 import { useTouch } from '../../hooks/useTouch';
 import { MiniMap } from '../UI/MiniMap';
 
@@ -45,6 +45,44 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const cell = dungeon.cells[y][x];
     if (!cell.visible && entity.type === 'enemy') return null;
 
+    // Render enemy with emoji
+    if (entity.type === 'enemy') {
+      const enemy = entity as Enemy;
+      
+      // Determine strength-based styling
+      let enemyClass = 'enemy-emoji';
+      let fontSize = '16px';
+      
+      if (enemy.name === 'Troll') {
+        enemyClass += ' enemy-strong';
+        fontSize = '20px';
+      } else if (enemy.name === 'Orc') {
+        enemyClass += ' enemy-medium';
+        fontSize = '18px';
+      } else {
+        enemyClass += ' enemy-weak';
+        fontSize = '16px';
+      }
+
+      return (
+        <span
+          key={entity.id}
+          className={enemyClass}
+          style={{
+            position: 'absolute',
+            left: '2px',
+            top: '1px',
+            fontSize: fontSize,
+            pointerEvents: 'none',
+            zIndex: 9
+          }}
+        >
+          {enemy.emoji}
+        </span>
+      );
+    }
+
+    // Render other entities (like player) with existing styling
     return (
       <div
         key={entity.id}
