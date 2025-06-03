@@ -2,14 +2,14 @@
   "name": "Mobile Rogue - Dungeon Crawler",
   "short_name": "Mobile Rogue",
   "description": "A mobile-optimized roguelike dungeon crawler game",
-  "start_url": "/rogue/",
+  "start_url": "/ai_sandbox/rogue/",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#1a1a2e",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/vite.svg",
+      "src": "/ai_sandbox/rogue/vite.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
