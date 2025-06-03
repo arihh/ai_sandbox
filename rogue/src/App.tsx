@@ -1,35 +1,81 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { GameLayout } from './components/Layout/MobileLayout';
+import { StatusBar } from './components/UI/StatusBar';
+import { VirtualPad } from './components/UI/VirtualPad';
+import { GameOverScreen } from './components/UI/GameOverScreen';
+import { GameBoard } from './components/Game/GameBoard';
+import { useGameState } from './hooks/useGameState';
+import './styles/mobile.css';
+import './styles/game.css';
 
+/**
+ * Main App component for the mobile roguelike game
+ * Manages the overall game state and coordinates UI components
+ */
 function App() {
-  const [count, setCount] = useState(0)
+  const { gameState, actions, derived } = useGameState();
+
+  const handleDirectionPress = (direction: { x: number; y: number }) => {
+    if (derived.canMove) {
+      actions.movePlayerBy(direction);
+    }
+  };
+
+  const handleActionPress = (action: string) => {
+    switch (action) {
+      case 'attack':
+        // Attack action would be handled here
+        console.log('Attack action');
+        break;
+      case 'menu':
+        // Menu action would be handled here
+        console.log('Menu action');
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleCellClick = (position: { x: number; y: number }) => {
+    // Handle cell click interactions
+    console.log('Cell clicked:', position);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <GameLayout
+      statusBar={
+        <StatusBar
+          player={gameState.player}
+          floor={gameState.currentFloor}
+          turnCount={gameState.turnCount}
+        />
+      }
+      gameBoard={
+        <GameBoard
+          dungeon={gameState.dungeon}
+          onPlayerMove={handleDirectionPress}
+          onCellClick={handleCellClick}
+        />
+      }
+      controls={
+        <VirtualPad
+          onDirectionPress={handleDirectionPress}
+          onActionPress={handleActionPress}
+          disabled={!derived.canMove}
+        />
+      }
+      overlay={
+        derived.isGameOver && (
+          <GameOverScreen
+            score={derived.finalScore}
+            floor={gameState.currentFloor}
+            turnCount={gameState.turnCount}
+            onRestart={actions.restartGame}
+            onMenu={actions.startNewGame}
+          />
+        )
+      }
+    />
+  );
 }
 
-export default App
+export default App;
