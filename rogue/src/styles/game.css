@@ -48,6 +48,17 @@
   background: #d69e2e;
   border: 1px solid #b7791f;
   box-shadow: 0 0 8px rgba(214, 158, 46, 0.4);
+  animation: stairsGlow 2s ease-in-out infinite alternate;
+}
+
+.cell.undiscovered {
+  background: #0f0f23;
+  border: 1px solid #0f0f23;
+}
+
+.cell.fog {
+  opacity: 0.4;
+  filter: grayscale(50%);
 }
 
 /* Player */
@@ -61,6 +72,7 @@
   box-shadow: 0 0 12px rgba(72, 187, 120, 0.6);
   transition: all 0.2s ease;
   z-index: 10;
+  animation: pulse 2s ease-in-out infinite alternate;
 }
 
 .player::before {
@@ -86,6 +98,7 @@
   box-shadow: 0 0 8px rgba(229, 62, 62, 0.4);
   transition: all 0.2s ease;
   z-index: 9;
+  animation: enemyIdle 3s ease-in-out infinite alternate;
 }
 
 .enemy::before {
@@ -129,6 +142,7 @@
   font-size: 16px;
   font-weight: 700;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  transition: color 0.3s ease;
 }
 
 .health-bar, .experience-bar {
@@ -186,11 +200,17 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.dpad-button:active {
+.dpad-button:active,
+.dpad-button.active {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-color: #a0aec0;
   transform: scale(0.95);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.dpad-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .dpad-up {
@@ -270,6 +290,11 @@
   border-radius: 8px;
   backdrop-filter: blur(5px);
   z-index: 50;
+  transition: opacity 0.3s ease;
+}
+
+.minimap:hover {
+  opacity: 0.9;
 }
 
 .minimap-grid {
@@ -282,6 +307,7 @@
 
 .minimap-cell {
   background: #2d3748;
+  transition: background-color 0.2s ease;
 }
 
 .minimap-cell.wall {
@@ -291,6 +317,7 @@
 .minimap-cell.player {
   background: #48bb78;
   box-shadow: 0 0 2px rgba(72, 187, 120, 0.8);
+  animation: minimapPlayerPulse 1.5s ease-in-out infinite alternate;
 }
 
 .minimap-cell.enemy {
@@ -325,9 +352,15 @@
   justify-content: center;
 }
 
-.action-btn:active {
+.action-btn:active,
+.action-btn.active {
   transform: scale(0.95);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Game over screen */
@@ -362,6 +395,7 @@
   color: #e53e3e;
   margin-bottom: 16px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  animation: titlePulse 2s ease-in-out infinite alternate;
 }
 
 .game-over-stats {
@@ -370,10 +404,84 @@
   opacity: 0.8;
 }
 
+.stat-line {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-label {
+  opacity: 0.7;
+}
+
+.stat-value {
+  font-weight: 600;
+}
+
 .game-over-buttons {
   display: flex;
   gap: 12px;
   margin-top: 24px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  border-color: #68d391;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+  border-color: #63b3ed;
+}
+
+/* Animations */
+@keyframes pulse {
+  from {
+    box-shadow: 0 0 12px rgba(72, 187, 120, 0.6);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(72, 187, 120, 0.9);
+  }
+}
+
+@keyframes enemyIdle {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes stairsGlow {
+  from {
+    box-shadow: 0 0 8px rgba(214, 158, 46, 0.4);
+  }
+  to {
+    box-shadow: 0 0 16px rgba(214, 158, 46, 0.8);
+  }
+}
+
+@keyframes minimapPlayerPulse {
+  from {
+    box-shadow: 0 0 2px rgba(72, 187, 120, 0.8);
+  }
+  to {
+    box-shadow: 0 0 4px rgba(72, 187, 120, 1);
+  }
+}
+
+@keyframes titlePulse {
+  from {
+    color: #e53e3e;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  to {
+    color: #fc8181;
+    text-shadow: 0 0 8px rgba(229, 62, 62, 0.6);
+  }
 }
 
 /* Responsive adjustments */
@@ -402,6 +510,12 @@
     width: 70px;
     height: 70px;
   }
+  
+  .action-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 12px;
+  }
 }
 
 @media (max-height: 600px) {
@@ -424,4 +538,23 @@
     width: 32px;
     height: 32px;
   }
+  
+  .action-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 11px;
+  }
+}
+
+/* Performance optimizations */
+.game-board {
+  will-change: transform;
+}
+
+.player, .enemy {
+  will-change: transform;
+}
+
+.minimap-cell.player {
+  will-change: background-color;
 }

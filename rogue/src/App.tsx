@@ -4,6 +4,8 @@ import { VirtualPad } from './components/UI/VirtualPad';
 import { GameOverScreen } from './components/UI/GameOverScreen';
 import { GameBoard } from './components/Game/GameBoard';
 import { useGameState } from './hooks/useGameState';
+import { audioManager } from './utils/audioManager';
+import { useEffect } from 'react';
 import './styles/mobile.css';
 import './styles/game.css';
 
@@ -13,6 +15,23 @@ import './styles/game.css';
  */
 function App() {
   const { gameState, actions, derived } = useGameState();
+
+  // Initialize audio on first user interaction
+  useEffect(() => {
+    const handleFirstInteraction = () => {
+      audioManager.resumeAudioContext();
+      document.removeEventListener('touchstart', handleFirstInteraction);
+      document.removeEventListener('click', handleFirstInteraction);
+    };
+
+    document.addEventListener('touchstart', handleFirstInteraction);
+    document.addEventListener('click', handleFirstInteraction);
+
+    return () => {
+      document.removeEventListener('touchstart', handleFirstInteraction);
+      document.removeEventListener('click', handleFirstInteraction);
+    };
+  }, []);
 
   const handleDirectionPress = (direction: { x: number; y: number }) => {
     if (derived.canMove) {

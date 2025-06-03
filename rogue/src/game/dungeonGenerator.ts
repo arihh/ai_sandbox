@@ -1,7 +1,7 @@
 // Simple dungeon generation algorithm for the roguelike game
 
 import { GAME_CONFIG, CELL_TYPES } from '../utils/constants';
-import { Dungeon, Cell, Position, Enemy } from './types';
+import { Dungeon, Cell, Position, Enemy, Entity } from './types';
 
 /**
  * Generates a random dungeon using a simple cellular automata approach
@@ -52,7 +52,18 @@ export function generateDungeon(floor: number): Dungeon {
   }
 
   // Generate enemies
-  const entities = generateEnemies(floorPositions, floor, MAX_ENEMIES_PER_FLOOR);
+  const entities: Entity[] = generateEnemies(floorPositions, floor, MAX_ENEMIES_PER_FLOOR);
+
+  // Add player entity to the dungeon
+  const playerEntity: Entity = {
+    id: 'player',
+    type: 'player',
+    position: playerStartPosition || { x: 1, y: 1 },
+    health: 100,
+    maxHealth: 100
+  };
+
+  entities.push(playerEntity);
 
   return {
     width: GRID_WIDTH,

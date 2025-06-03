@@ -3,6 +3,7 @@
 import { GAME_CONFIG, GAME_STATES, CELL_TYPES } from '../utils/constants';
 import { GameStateData, Player, Position, Enemy, Entity } from './types';
 import { generateDungeon } from './dungeonGenerator';
+import { audioManager } from '../utils/audioManager';
 
 /**
  * Initialize a new game state
@@ -97,12 +98,16 @@ export function movePlayer(
       position: newPosition
     };
     
+    // Play move sound
+    audioManager.playMove();
+    
     // Check if player reached stairs
     if (
       newPosition.x === gameState.dungeon.stairsPosition.x &&
       newPosition.y === gameState.dungeon.stairsPosition.y
     ) {
       newGameState = advanceToNextFloor(newGameState);
+      audioManager.playStairs();
     }
   }
 
@@ -126,8 +131,12 @@ function handleCombat(gameState: GameStateData, enemy: Enemy): GameStateData {
   const playerDamage = Math.max(1, gameState.player.attack! - (enemy.defense || 0));
   enemy.health -= playerDamage;
 
+  // Play attack sound
+  audioManager.playAttack();
+
   if (enemy.health <= 0) {
     // Enemy defeated
+    audioManager.playEnemyHit();
     newGameState = defeatEnemy(newGameState, enemy);
   } else {
     // Enemy attacks back
@@ -140,6 +149,7 @@ function handleCombat(gameState: GameStateData, enemy: Enemy): GameStateData {
     // Check if player died
     if (newGameState.player.health <= 0) {
       newGameState.state = GAME_STATES.GAME_OVER;
+      audioManager.playGameOver();
     }
   }
 
@@ -175,7 +185,11 @@ function defeatEnemy(gameState: GameStateData, enemy: Enemy): GameStateData {
   // Check for level up
   if (newExperience >= newGameState.player.experienceToNext) {
     newGameState = levelUpPlayer(newGameState);
+    audioManager.playLevelUp();
   }
+
+  // Play pickup sound
+  audioManager.playPickup();
 
   return newGameState;
 }
