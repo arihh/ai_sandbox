@@ -228,9 +228,9 @@ function generateEnemies(floorPositions: Position[], floor: number, maxEnemies: 
 
   // Enemy types with different stats based on floor
   const enemyTypes = [
-    { name: 'Goblin', health: 20, attack: 5, experience: 10, gold: 5 },
-    { name: 'Orc', health: 40, attack: 8, experience: 20, gold: 10 },
-    { name: 'Troll', health: 80, attack: 12, experience: 40, gold: 20 },
+    { name: 'Goblin', emoji: '🦀', health: 20, attack: 5, experience: 10, gold: 5 },
+    { name: 'Orc', emoji: '🦊', health: 40, attack: 8, experience: 20, gold: 10 },
+    { name: 'Troll', emoji: '🐲', health: 80, attack: 12, experience: 40, gold: 20 },
   ];
 
   for (let i = 0; i < numEnemies; i++) {
@@ -253,6 +253,7 @@ function generateEnemies(floorPositions: Position[], floor: number, maxEnemies: 
       type: 'enemy',
       position: { ...position },
       name: enemyType.name,
+      emoji: enemyType.emoji,
       health: Math.floor(enemyType.health * floorMultiplier),
       maxHealth: Math.floor(enemyType.health * floorMultiplier),
       attack: Math.floor(enemyType.attack * floorMultiplier),

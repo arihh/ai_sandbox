@@ -41,6 +41,7 @@ export interface Player extends Entity {
 export interface Enemy extends Entity {
   type: 'enemy';
   name: string;
+  emoji: string;
   experienceReward: number;
   goldReward: number;
   aiType: 'passive' | 'aggressive' | 'guard';
