@@ -1,0 +1,19 @@
+# Deployment directory
+deploy/
+
+# Node modules
+node_modules/
+
+# Build outputs
+dist/
+
+# Environment files
+.env*
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
