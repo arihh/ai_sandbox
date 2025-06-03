@@ -3,27 +3,42 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./rogue
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          
       - name: Install dependencies
-        run: npm ci
-      - name: Build
-        run: npm run build
+        run: |
+          cd rogue
+          npm ci
+          
+      - name: Build rogue app
+        run: |
+          cd rogue
+          npm run build
+          
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p deploy
+          # Copy menu index.html to root
+          cp docs/index.html deploy/
+          # Copy rogue build to /rogue/ subdirectory
+          mkdir -p deploy/rogue
+          cp -r rogue/dist/* deploy/rogue/
+          
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./rogue/dist
-          destination_dir: rogue
-          keep_files: true
+          publish_dir: ./deploy
+          keep_files: false
